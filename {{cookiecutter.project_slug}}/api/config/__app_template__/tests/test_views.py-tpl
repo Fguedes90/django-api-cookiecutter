@@ -1,0 +1,90 @@
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from api.{{ app_name }}.models import {{ camel_case_app_name }}
+from api.{{ app_name }}.tests.factories import {{ camel_case_app_name }}Factory
+from api.{{ app_name }}.serializers import {{ camel_case_app_name }}Serializer
+from typing import Dict, Any
+
+
+{{ upper_app_name }}_INITIAL_COUNT = 1
+{{ upper_app_name }}_CREATED_COUNT = 1
+PAGINATION_COUNT = 10
+NONEXISTENT_{{ app_name }}_ID = 999
+
+
+def test_data() -> Dict[str, Any]:
+    {{ app_name }} = {{ camel_case_app_name }}Factory()
+    valid_data = {{ camel_case_app_name }}Serializer({{ app_name }}).data
+    {{ camel_case_app_name }}.objects.all().delete()
+    return valid_data
+
+
+class Test{{ camel_case_app_name }}ViewSet(APITestCase):
+    """Test suite for the {{ camel_case_app_name }}ViewSet."""
+
+    def setUp(self) -> None:
+        self.test_data = test_data()
+
+    def tearDown(self) -> None:
+        {{ camel_case_app_name }}.objects.all().delete()
+    
+
+    def test_create_{{ app_name }}(self) -> None:
+        """
+        Testa a criação de um novo {{ app_name }}.
+        """
+        new_{{ app_name }}_data = self.test_data
+        response = self.client.post(reverse("{{ app_name }}-list"), new_{{ app_name }}_data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual({{ camel_case_app_name }}.objects.count(), {{ upper_app_name }}_CREATED_COUNT)
+        self.assertEqual({{ camel_case_app_name }}.objects.get(id=new_{{ app_name }}_data["id"]).nome, new_{{ app_name }}_data["nome"])
+
+    def test_create_{{ app_name }}_invalid_data(self) -> None:
+        """
+        Testa a criação de um novo {{ app_name }} com dados inválidos.
+        """
+        invalid_data = self.test_data
+        invalid_data["nome"] = ""
+        response = self.client.post(reverse("{{ app_name }}-list"), invalid_data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual({{ camel_case_app_name }}.objects.count(), 0)
+
+    def test_get_{{ app_name }}_list(self) -> None:
+        """
+        Testa a listagem de {{ app_name }}.
+        """
+        {{ camel_case_app_name }}Factory.create_batch(2, nome='Outro {{ app_name }}')
+        response = self.client.get(reverse('{{ app_name }}-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_get_{{ app_name }}_detail(self) -> None:
+        """
+        Testa a recuperação de um {{ app_name }} específico.
+        """
+        {{ app_name }} = {{ camel_case_app_name }}Factory()
+        response = self.client.get(reverse('{{ app_name }}-detail', kwargs={'pk': {{ app_name }}.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['nome'], {{ app_name }}.nome)
+
+    def test_update_{{ app_name }}(self) -> None:
+        """
+        Testa a atualização de um {{ app_name }}.
+        """
+        {{ app_name }} = {{ camel_case_app_name }}Factory()
+        {{ app_name }}_data = {{ camel_case_app_name }}Serializer({{ app_name }}).data
+        updated_data = {**{{ app_name }}_data, "nome": "{{ app_name }} Atualizado"}
+        response = self.client.put(reverse('{{ app_name }}-detail', kwargs={'pk': {{ app_name }}.pk}), updated_data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['nome'], '{{ app_name }} Atualizado')
+
+    def test_delete_{{ app_name }}(self) -> None:
+        """
+        Testa a exclusão de um funcionário.
+        """
+        {{ app_name }} = {{ camel_case_app_name }}Factory()
+        response = self.client.delete(reverse('{{ app_name }}-detail', kwargs={'pk': {{ app_name }}.pk}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse({{ camel_case_app_name }}.objects.filter(pk={{ app_name }}.pk).exists())

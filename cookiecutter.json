@@ -1,0 +1,14 @@
+{
+    "project_name": "API Project",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+    "author": "Anonymous <anon@anon.com>",
+    "description": "",
+    "time_zone": "America/Sao_Paulo",
+    "language_code": "pt-br",
+    "admin_username": "admin",
+    "admin_password": "admin",
+    "admin_mail": "admin@admin.com",
+    "_copy_without_render": [
+      "*-tpl"
+  ]
+  }

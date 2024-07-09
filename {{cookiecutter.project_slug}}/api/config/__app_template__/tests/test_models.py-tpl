@@ -1,0 +1,18 @@
+from __future__ import annotations
+
+import pytest
+from django.core.exceptions import ValidationError
+from api.{{ app_name }}.models import {{ camel_case_app_name }}
+from api.{{ app_name }}.tests.factories import {{ camel_case_app_name }}Factory
+from django.db.utils import IntegrityError
+from django.test import TestCase
+
+
+class {{ camel_case_app_name }}ModelTest(TestCase):
+    def setUp(self) -> None:
+        self.{{ app_name }} = {{ camel_case_app_name }}Factory()
+
+    def test_{{ app_name }}_creation(self) -> None:
+        employee = {{ camel_case_app_name }}.objects.get(id=self.{{ app_name }}.id)
+
+    # Add tests here

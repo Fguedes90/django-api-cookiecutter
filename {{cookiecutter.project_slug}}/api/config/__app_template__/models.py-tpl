@@ -1,0 +1,11 @@
+from __future__ import annotations
+
+from django.db import models
+from api.common.models_mixins import AuditMixin, SoftDeleteMixin
+
+class {{ camel_case_app_name }}Model(AuditMixin, SoftDeleteMixin, models.Model):
+    # Add fields here
+
+
+    def __str__(self) -> str:
+        raise NotImplementedError

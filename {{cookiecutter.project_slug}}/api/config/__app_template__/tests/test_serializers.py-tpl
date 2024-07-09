@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+import pytest
+from rest_framework import serializers
+from api.{{ app_name }}.serializers import {{ camel_case_app_name }}Serializer
+from api.{{ app_name }}.tests.factories import {{ camel_case_app_name }}Factory
+from django.core.files.uploadedfile import SimpleUploadedFile
+from api.{{ app_name }}.models import {{ camel_case_app_name }}
+from django.test import TestCase
+
+
+
+class {{ camel_case_app_name }}SerializerTest(TestCase):
+
+    def setUp(self) -> None:
+        self.{{ app_name }} = {{ camel_case_app_name }}Factory()
+        self.valid_{{ app_name }}_data = {{ camel_case_app_name }}Serializer(self.{{ app_name }}).data
+        {{ camel_case_app_name }}.objects.all().delete()
+
+    def validate_serializer(self, data: dict, should_raise: bool = False) -> None:
+        if should_raise:
+            with pytest.raises(serializers.ValidationError):
+                serializer = {{ camel_case_app_name }}Serializer(data=data)
+                serializer.is_valid(raise_exception=True)
+        else:
+            serializer = {{ camel_case_app_name }}Serializer(data=data)
+            assert serializer.is_valid(), f"Errors: {serializer.errors}"
+
+    def test_{{ app_name }}_serializer_valid(self) -> None:
+        self.validate_serializer(self.valid_{{ app_name }}_data)
+
+    def test_{{ app_name }}_serializer_duplicate_pis(self) -> None:
+        employee = {{ camel_case_app_name }}Factory()
+        employee_data = {{ camel_case_app_name }}Serializer(employee).data
+        self.validate_serializer(employee_data, should_raise=True)
+
+
+    def test_{{ app_name }}_serializer_invalid_fields(self) -> None:
+        invalid_cases = [
+            ("field", "invalid_value"),  # Add invalid fields here
+        ]
+
+        for field, value in invalid_cases:
+            with self.subTest(field=field, value=value):
+                invalid_data = self.valid_{{ app_name }}_data.copy()
+                invalid_data[field] = value
+                self.validate_serializer(invalid_data, should_raise=True)

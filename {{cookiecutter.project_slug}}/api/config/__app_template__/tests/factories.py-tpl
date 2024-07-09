@@ -1,0 +1,14 @@
+from __future__ import annotations
+
+import io
+
+import factory
+
+from api.{{ app_name }}.models import {{ camel_case_app_name }}
+
+
+class {{ camel_case_app_name }}Factory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = {{ camel_case_app_name }}
+
+    # Add fields here

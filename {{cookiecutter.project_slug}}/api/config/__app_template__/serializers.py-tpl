@@ -1,0 +1,10 @@
+from __future__ import annotations
+
+from rest_framework import serializers
+from api.{{ app_name }}.models import {{ camel_case_app_name }}
+
+
+class {{ camel_case_app_name }}Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = {{ camel_case_app_name }}
+        fields = "__all__"
